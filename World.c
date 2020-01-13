@@ -1,30 +1,33 @@
 #include <stdlib.h>
+#include <stdbool.h>
 
-typedef struct Form
+typedef struct Cell
 {
-	char sprite;
-	int x;
-	int y;
-} Form_t;
+	void *inhabitant;
+	int color;
+	int effect;
+} Cell_t;
 
 typedef struct World
 {
 	int sizeX;
 	int sizeY;
-	Form_t ***map;
+	Cell_t ***map;
 }World_t;
 
 World_t *curWorld;
+#include "Form.c"
 
 World_t *makeMap(int sizeX, int sizeY)
 {
-	Form_t ***map = (Form_t***)malloc(sizeof(Form_t) * sizeY);
+	Cell_t ***map = (Cell_t***)malloc(sizeof(Cell_t) * sizeY);
 	int i = 0;
 	while (i < sizeY) {
-		Form_t **t = (Form_t**)malloc(sizeof(Form_t) * sizeX);
+		Cell_t **t = (Cell_t**)malloc(sizeof(Cell_t) * sizeX);
+		//Cell_t *t[sizeX];
 		int k = 0;
 		while (k < sizeX) {
-			t[k] = 0;//tmp;
+			t[k] = (Cell_t*)malloc(sizeof(Cell_t));
 			k++;
 		}
 		map[i] = t;
@@ -36,30 +39,19 @@ World_t *makeMap(int sizeX, int sizeY)
 	return w;
 }
 
-void moveForm(Form_t *f, int veloX, int veloY)
+void checkerMap(World_t *world)
 {
-	int x = f->x + veloX;
-	int y = f->y + veloY;
-	if (x < curWorld->sizeX && x > -1 
-	 && y < curWorld->sizeY && y > -1) {
-		if (curWorld->map[x][y] == NULL) {
-			curWorld->map[f->x][f->y] = 0;
-			f->x += veloX;
-			f->y += veloY;
-			curWorld->map[x][y] = f;
+	int x = 0;
+	while (x < world->sizeX) {
+		int y = 0;
+		int color = x % 2;
+		while (y < world->sizeY) {
+			color = (color + 1) % 2;
+			world->map[x][y]->color = 1 + color;
+			y++;
 		}
+ 		x++;
 	}
-}
-
-Form_t *spawnForm(char obj, int xPos, int yPos)
-{
-	Form_t *tmp = (Form_t*)malloc(sizeof(Form_t));
-	//*tmp = {obj, xPos, yPos};
-	tmp->sprite = obj;
-	tmp->x = xPos;
-	tmp->y = yPos;
-	curWorld->map[xPos][yPos] = tmp;
-	return tmp;
 }
 
 void drawMap(World_t *world , WINDOW *win)
@@ -70,10 +62,13 @@ void drawMap(World_t *world , WINDOW *win)
 		int x = 0;
 		while (x < world->sizeX) {
 			char c = ' ';
-			if (world->map[x][y] != 0) {
-				c = world->map[x][y]->sprite;
-			} 
-			waddch(win, c | A_UNDERLINE);
+			int col = 0;
+			if (world->map[x][y]->inhabitant != 0) {
+				Form_t *f = (Form_t*)world->map[x][y]->inhabitant;
+				c = f->sprite;
+				col = f->color;
+			}
+			waddch(win, c | COLOR_PAIR(world->map[x][y]->color + col) | world->map[x][y]->effect);
 			wrefresh(win);
 			x++;
 		}
@@ -83,12 +78,17 @@ void drawMap(World_t *world , WINDOW *win)
 
 void deleteMap(World_t *world)
 {
-	int y = 0;
-	while (y < world->sizeY) {
-		free(world->map[y]);
-		y++;
+	int x = 0;
+	while (x < world->sizeX) {
+		int y = 0;
+		while (y < world->sizeY) {
+			free(world->map[x][y]);
+			y++;
+		}
+		free(world->map[x]);
+		x++;
 	}
 	free(world->map);
 	free(world);
-	
 }
+
