@@ -13,12 +13,12 @@ typedef struct World
 	int sizeX;
 	int sizeY;
 	Cell_t ***map;
-}World_t;
+}World;
 
-World_t *curWorld;
+World *curWorld;
 #include "Form.c"
 
-World_t *makeMap(int sizeX, int sizeY)
+World *makeMap(int sizeX, int sizeY)
 {
 	Cell_t ***map = (Cell_t***)malloc(sizeof(Cell_t) * sizeY);
 	int i = 0;
@@ -33,13 +33,13 @@ World_t *makeMap(int sizeX, int sizeY)
 		map[i] = t;
 		i++;
 	}
-	World_t *w = (World_t*)malloc(sizeof(World_t)); 
-	World_t tmpW = {sizeX, sizeY, map};
+	World *w = (World*)malloc(sizeof(World)); 
+	World tmpW = {sizeX, sizeY, map};
 	*w = tmpW;
 	return w;
 }
 
-void checkerMap(World_t *world)
+void checkerMap(World *world)
 {
 	int x = 0;
 	while (x < world->sizeX) {
@@ -54,7 +54,7 @@ void checkerMap(World_t *world)
 	}
 }
 
-void drawMap(World_t *world , WINDOW *win)
+void drawMap(World *world , WINDOW *win)
 {
 	wmove(win, 0, 0);
 	int y = 0;
@@ -64,7 +64,7 @@ void drawMap(World_t *world , WINDOW *win)
 			char c = ' ';
 			int col = 0;
 			if (world->map[x][y]->inhabitant != 0) {
-				Form_t *f = (Form_t*)world->map[x][y]->inhabitant;
+				Form *f = (Form*)world->map[x][y]->inhabitant;
 				c = f->sprite;
 				col = f->color;
 			}
@@ -76,7 +76,7 @@ void drawMap(World_t *world , WINDOW *win)
 	}
 }
 
-void deleteMap(World_t *world)
+void deleteMap(World *world)
 {
 	int x = 0;
 	while (x < world->sizeX) {

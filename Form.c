@@ -5,9 +5,9 @@ typedef struct Form
 	int color;
 	int x;
 	int y;
-} Form_t;
+} Form;
 
-void moveForm(Form_t *f, int veloX, int veloY)
+void moveForm(Form *f, int veloX, int veloY)
 {
 	int x = f->x + veloX;
 	int y = f->y + veloY;
@@ -22,7 +22,7 @@ void moveForm(Form_t *f, int veloX, int veloY)
 	}
 }
 
-void placeForm(Form_t *f, int x, int y)
+void placeForm(Form *f, int x, int y)
 {
 	if (x < curWorld->sizeX && x > -1 
 	 && y < curWorld->sizeY && y > -1) {
@@ -36,9 +36,9 @@ void placeForm(Form_t *f, int x, int y)
 
 }
 
-Form_t *spawnForm(char obj, int xPos, int yPos)
+Form *spawnForm(char obj, int xPos, int yPos)
 {
-	Form_t *tmp = (Form_t*)malloc(sizeof(Form_t));
+	Form *tmp = (Form*)malloc(sizeof(Form));
 	tmp->sprite = obj;
 	tmp->x = xPos;
 	tmp->y = yPos;

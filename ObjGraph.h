@@ -1,3 +1,5 @@
+#include<stdlib.h>
+
 typedef struct ObjNode
 {
 	int x;
