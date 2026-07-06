@@ -1,10 +1,12 @@
 #include "FormNetwork.h"
 #include "TUI.h"
+#include "AudioMan.h"
 
 int worldX = 40;
 int worldY = 50;
 
 typedef struct {
+	Form *self;
 	int moveX;
 	int moveY;
 
@@ -12,7 +14,19 @@ typedef struct {
 	int speedCounter;
 } moveVar;
 
+int sound0;
+
+void moveGuy(void *move) {
+	moveVar *mv = move;
+	Form *f = mv->self;
+	if (mv->moveX != 0 || mv->moveY != 0) {
+		moveForm(f, mv->moveX, mv->moveY);
+		setFramePosition(f->pos[0], f->pos[1]);
+	}
+}
+
 int move(void *form, Action *act) {
+	return 0;
 	moveVar *mv = act->data;
 	Form *f = form;
 	if (mv->speedCounter >= mv->speed) {
@@ -34,7 +48,7 @@ void moveUp(void *actor, float val) {
 		if (val == 1) {
 			mv->moveY = 1;
 		} else {
-			mv->moveY = 0;
+			//mv->moveY = 0;
 		}
 	}
 }
@@ -46,7 +60,7 @@ void moveLeft(void *actor, float val) {
 		if (val == 1) {
 			mv->moveX = -1;
 		} else {
-			mv->moveX = 0;
+			//mv->moveX = 0;
 		}
 	}
 }
@@ -58,7 +72,7 @@ void moveDown(void *actor, float val) {
 		if (val == 1) {
 			mv->moveY = -1;
 		} else {
-			mv->moveY = 0;
+			//mv->moveY = 0;
 		}
 	}
 }
@@ -70,7 +84,7 @@ void moveRight(void *actor, float val) {
 		if (val == 1) {
 			mv->moveX = 1;
 		} else {
-			mv->moveX = 0;
+			//mv->moveX = 0;
 		}
 	}
 }
@@ -99,6 +113,10 @@ void moveFrameRight(void *actor, float val) {
 
 int main() {
 	startWorld(true);
+	initAudio();
+	sound0 = processAudioFile("resources/a1.wav", false);
+	//scheduleAudio(sound0, 1.0);
+
 	makeWorld(worldX, worldY);
 	setFrameDimension(20, 10);
 	setFramePosition(worldX/2, worldY/2);
@@ -110,18 +128,19 @@ int main() {
 	skin->r = 128;
 	skin->g = 128;
 	skin->b = 128;
-	
+
+	Actor *actor = makeFormActor(f);
+	addActor(actor);
 	moveVar mv = {
+		.self = f,
 		.moveX = 0,
 		.moveY = 0,
 		.speed = 10,
 		.speedCounter = 0,
 	};
 	Action *m = makeAction(0, &move, &mv);
-	Actor *actor = makeFormActor(f);
 	addAction(actor, m);
-	addActor(actor);
-
+	scheduleEvent(0, moveGuy, &mv, 3.0);
 	Player *p = makePlayer(actor, 0, 0);
 	addControl(p, "K0W", moveUp);
 	addControl(p, "K0A", moveLeft);

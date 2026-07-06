@@ -29,10 +29,14 @@ RENDERER = TUI
 RENDERDIR = ../$(RENDERER)/
 RENDERLIB = lib$(RENDERER).a
 
+AUDIO = AudioMan
+AUDIODIR = ../$(AUDIO)/
+AUDIOLIB = lib$(AUDIO).a
+AUDIOFLAGS = -lportaudio -lsndfile
 
 # Linking
-$(TARGET): FormNetwork.h $(RENDERER).h libForm.a libGame.a $(RENDERLIB) libOIB.a libMoltnCore.a libHelper.a  main.o  
-	gcc main.o -o $@ $(LDFLAGS) libForm.a $(RENDERLIB) libGame.a libOIB.a libMoltnCore.a libHelper.a -lm
+$(TARGET): FormNetwork.h $(RENDERER).h $(AUDIO).h libForm.a $(AUDIOLIB) libGame.a $(RENDERLIB) libOIB.a libMoltnCore.a libHelper.a  main.o  
+	gcc main.o -o $@ $(LDFLAGS) libForm.a $(AUDIOLIB) $(RENDERLIB) libGame.a libOIB.a libMoltnCore.a libHelper.a $(AUDIOFLAGS) -lm
 
 libHelper.a:
 	$(MAKE) -C ../FormNetwork/
@@ -61,6 +65,14 @@ $(RENDERLIB):
 $(RENDERER).h:
 	$(MAKE) -C $(RENDERDIR)
 	cp $(RENDERDIR)$(RENDERER).h .
+
+$(AUDIOLIB):
+	$(MAKE) -C $(AUDIODIR)
+	cp $(AUDIODIR)$(AUDIOLIB) .
+
+$(AUDIO).h:
+	$(MAKE) -C $(AUDIODIR)
+	cp $(AUDIODIR)$(AUDIO).h .
 
 FormNetwork.h: GameCore.h 
 	@echo "Generating Form header"
@@ -93,7 +105,7 @@ clean:
 	rm -f *.o *.a *.d
 
 fclean:
-	rm -f $(TARGET) *.o *.a *.d GameCore.h FormNetwork.h $(RENDERER).h
+	rm -f $(TARGET) *.o *.a *.d GameCore.h FormNetwork.h $(RENDERER).h $(AUDIO).h
 
 fixTerminal:
 	stty sane

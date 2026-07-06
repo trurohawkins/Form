@@ -1,5 +1,6 @@
 #include "GameCore.h"
 #include "TUI.h"
+#include "AudioMan.h"
 
 #include "form.h"
 #include "cell.h"
@@ -40,6 +41,7 @@ void runWorld() {
 
 void formLoop(float delta) {
 	if (runGraphics) {
+		parseAudioEvents();
 		renderWorld();
 	}
 }
