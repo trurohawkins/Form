@@ -62,6 +62,7 @@ bool endWorld() {
 	if (runGraphics > 0) {
 		exitScreen();
 	}
+	endAudio();
 	freeWorld();
 	return true;
 }
