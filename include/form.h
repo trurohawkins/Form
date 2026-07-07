@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "GameCore.h"
 
 // standard Nub types
 	// 0 - no type

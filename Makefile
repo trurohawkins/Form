@@ -1,5 +1,35 @@
 TARGET = Form
 
+LIBDIR = lib/
+INCDIR = include/
+
+RENDERER = TUI
+RENDERDIR = ../$(RENDERER)/
+RENDERLIB = $(RENDERDIR)lib/
+RENDERINC = $(RENDERDIR)include/
+
+AUDIO = AudioMan
+AUDIODIR = ../$(AUDIO)/
+AUDIOLIB = $(AUDIODIR)lib/
+AUDIOINC = $(AUDIODIR)include/
+AUDIOFLAGS = -lportaudio -lsndfile
+
+HELPERDIR = ../HelperFuncs/
+HELPERINC = $(HELPERDIR)include/
+HELPERLIB = $(HELPERDIR)lib/
+
+MOLTNDIR = ../MOLTN/
+MOLTNINC = $(MOLTNDIR)include/
+MOLTNLIB = $(MOLTNDIR)lib/
+
+OIBDIR = ../OIB/
+OIBINC = $(OIBDIR)include/
+OIBLIB = $(OIBDIR)lib/
+
+GAMEDIR = ../GameCore/
+GAMEINC = $(GAMEDIR)include/
+GAMELIB = $(GAMEDIR)lib/
+
 DEV_CFLAGS = -g -fsanitize=address,undefined -fno-omit-frame-pointer
 DEV_LDFLAGS = -fsanitize=address,undefined
 
@@ -9,7 +39,7 @@ TSAN_LDFLAGS = -fsanitize=thread
 PROD_CFLAGS = -O2
 PROD_LDFLAGS =
 
-CFLAGS = -MMD -MP
+CFLAGS = -MMD -MP -I$(HELPERINC) -I$(MOLTNINC) -I$(OIBINC) -I$(GAMEINC) -I$(AUDIOINC) -I$(RENDERINC) -I$(INCDIR)
 LDFLAGS =
 
 dev: CFLAGS += $(DEV_CFLAGS)
@@ -24,88 +54,57 @@ prod: CFLAGS += $(PROD_CFLAGS)
 prod: LDFLAGS += $(PROD_LDFLAGS)
 prod: $(TARGET)
 
-ENGINEDIR = ../GameCore/
-RENDERER = TUI
-RENDERDIR = ../$(RENDERER)/
-RENDERLIB = lib$(RENDERER).a
-
-AUDIO = AudioMan
-AUDIODIR = ../$(AUDIO)/
-AUDIOLIB = lib$(AUDIO).a
-AUDIOFLAGS = -lportaudio -lsndfile
-
 # Linking
-$(TARGET): FormNetwork.h $(RENDERER).h $(AUDIO).h libForm.a $(AUDIOLIB) libGame.a $(RENDERLIB) libOIB.a libMoltnCore.a libHelper.a  main.o  
-	gcc main.o -o $@ $(LDFLAGS) libForm.a $(AUDIOLIB) $(RENDERLIB) libGame.a libOIB.a libMoltnCore.a libHelper.a $(AUDIOFLAGS) -lm
+$(TARGET): $(INCDIR)FormEngine.h $(LIBDIR)libFormEngine.a $(RENDERLIB)lib$(RENDERER).a $(RENDERINC)$(RENDERER).h $(AUDIOLIB)lib$(AUDIO).a $(AUDIOINC)$(AUDIO).h $(GAMEINC)GameCore.h $(GAMELIB)libGameCore.a $(OIBINC)OIB.h $(OIBLIB)libOIB.a $(MOLTNLIB)libMoltnCore.a $(MOLTNINC)MoltnCore.h $(HELPERLIB)libHelper.a  $(HELPERINC)helper.h main.o  
+	gcc main.o -o $@ $(LDFLAGS) $(LIBDIR)libFormEngine.a -L$(AUDIOLIB) -l$(AUDIO) -L$(RENDERLIB) -l$(RENDERER) -L$(GAMELIB) -lGameCore -L$(OIBLIB) -lOIB -L$(MOLTNLIB) -lMoltnCore -L$(HELPERLIB) -lHelper $(AUDIOFLAGS) -lm
 
-libHelper.a:
-	$(MAKE) -C ../FormNetwork/
-	cp ../FormNetwork/libHelper.a .
+$(HELPERLIB)libHelper.a:
+	$(MAKE) -C $(HELPERDIR)
 
-libMoltnCore.a:
-	$(MAKE) -C $(ENGINEDIR)
-	cp $(ENGINEDIR)libMoltnCore.a .
+$(MOLTNLIB)libMoltnCore.a:
+	$(MAKE) -C $(MOLTNDIR)
 
-libOIB.a:
-	$(MAKE) -C $(ENGINEDIR)
-	cp $(ENGINEDIR)libOIB.a .
+$(OIBLIB)libOIB.a:
+	$(MAKE) -C $(OIBDIR)
 
-libGame.a:
-	$(MAKE) -C $(ENGINEDIR)
-	cp $(ENGINEDIR)libGame.a .
+$(GAMELIB)libGameCore.a:
+	$(MAKE) -C $(GAMEDIR)
 
-GameCore.h:
-	$(MAKE) -C $(ENGINEDIR)
-	cp $(ENGINEDIR)GameCore.h .
-
-$(RENDERLIB):
+$(RENDERLIB)lib$(RENDERER).a:
 	$(MAKE) -C $(RENDERDIR)
-	cp $(RENDERDIR)$(RENDERLIB) .
 
-$(RENDERER).h:
-	$(MAKE) -C $(RENDERDIR)
-	cp $(RENDERDIR)$(RENDERER).h .
-
-$(AUDIOLIB):
+$(AUDIOLIB)lib$(AUDIO).a:
 	$(MAKE) -C $(AUDIODIR)
-	cp $(AUDIODIR)$(AUDIOLIB) .
-
-$(AUDIO).h:
-	$(MAKE) -C $(AUDIODIR)
-	cp $(AUDIODIR)$(AUDIO).h .
-
-FormNetwork.h: GameCore.h 
-	@echo "Generating Form header"
-	@echo "#pragma once" > $@
-	@cat GameCore.h form.h cell.h world.h WorldManager.h >> $@
 
 # Static lib
-libForm.a: form.o cell.o world.o WorldManager.o  
+$(LIBDIR)libFormEngine.a: form.o cell.o world.o WorldManager.o | $(LIBDIR)
 	ar rs $@ $^
 
 # Compiling
 main.o: main.c
 	gcc $(CFLAGS) -c main.c -o $@
 
-form.o: $(FD)form.c $(FD)form.h
-	gcc $(CFLAGS) -c $(FD)form.c -o $@
+form.o: form.c $(INCDIR)form.h
+	gcc $(CFLAGS) -c form.c -o $@
 
-cell.o: $(FD)cell.c $(FD)cell.h
-	gcc $(CFLAGS) -c $(FD)cell.c -o $@
+cell.o: cell.c $(INCDIR)cell.h
+	gcc $(CFLAGS) -c cell.c -o $@
 
-world.o: $(FD)world.c $(FD)world.h
-	gcc $(CFLAGS) -c $(FD)world.c -o $@
+world.o: world.c $(INCDIR)world.h
+	gcc $(CFLAGS) -c world.c -o $@
 
-WorldManager.o: $(FD)WorldManager.c $(FD)WorldManager.h
-	gcc $(CFLAGS) -c $(FD)WorldManager.c -o $@
+WorldManager.o: WorldManager.c $(INCDIR)WorldManager.h
+	gcc $(CFLAGS) -c WorldManager.c -o $@
 
+$(LIBDIR):
+	mkdir -p $(LIBDIR)
 
 # tools
 clean:
-	rm -f *.o *.a *.d
+	rm -f *.o *.d
 
 fclean:
-	rm -f $(TARGET) *.o *.a *.d GameCore.h FormNetwork.h $(RENDERER).h $(AUDIO).h
+	rm -f $(TARGET) *.o *.d $(LIBDIR)libFormEngine.a 
 
 fixTerminal:
 	stty sane

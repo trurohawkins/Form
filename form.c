@@ -1,4 +1,3 @@
-#include "GameCore.h"
 #include "form.h"
 
 Form *makeForm(int id) {
