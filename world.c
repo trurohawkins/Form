@@ -19,6 +19,10 @@ void makeWorld(int x, int y) {
 	theWorld.map = calloc(x * y, sizeof(Cell));
 }
 
+World *getWorld() {
+	return &theWorld;
+}
+
 void setFrameDimension(int x, int y) {
 	frameDim[0] = x;
 	frameDim[1] = y;

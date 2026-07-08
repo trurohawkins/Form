@@ -28,7 +28,7 @@ Nub *growNub(Form *f);
 Nub *findNub(Form *f, int type);
 
 // attaches nub that knows actor
-Actor * makeFormActor(Form *f);
+Actor *makeFormActor(Form *f);
 
 void freeForm(void *form);
 void freeNub(void *nub);

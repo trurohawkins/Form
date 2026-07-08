@@ -11,6 +11,7 @@ extern World theWorld;
 extern bool worldChanged;
 
 void makeWorld(int x, int y);
+World *getWorld();
 void setFrameDimension(int x, int y);
 void setFramePosition(int x, int y);
 void moveFrame(int xd, int yd);
