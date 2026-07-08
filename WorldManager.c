@@ -8,11 +8,15 @@
 #include "WorldManager.h"
 
 bool runGraphics = true;
+bool runAudio = true;
 
 pthread_t gameThread;
 pthread_t outputThread;
 
-bool startWorld(bool graphics) {
+bool startWorld(int graphics, int audio) {
+	srand(time(NULL));
+	initDirections();
+
 	initCore();
 
 	initGame();
@@ -22,6 +26,10 @@ bool startWorld(bool graphics) {
 		initScreen();
 	}
 	runGraphics = graphics;
+	if (audio > 0) {
+		initAudio();
+	}
+	runAudio = audio;
 
 	return true;
 }
@@ -62,7 +70,9 @@ bool endWorld() {
 	if (runGraphics > 0) {
 		exitScreen();
 	}
-	endAudio();
+	if (runAudio > 0) {
+		endAudio();
+	}
 	freeWorld();
 	return true;
 }

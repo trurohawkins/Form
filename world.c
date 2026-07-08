@@ -40,7 +40,7 @@ void moveFrame(int xd, int yd) {
 }
 
 void freeWorld() {
-	linkedList *forms = makeList();
+	linkedList *forms = 0;
 	for (int i = 0; i < theWorld.x * theWorld.y; i++) {
 		Cell c = theWorld.map[i];
 		for (int j = 0; j < FORMS_PER_CELL; j++) {
@@ -49,7 +49,9 @@ void freeWorld() {
 			}
 		}
 	}
-	deleteList(&forms, &freeForm);
+	if (forms) {
+		deleteList(&forms, &freeForm);
+	}
 }
 
 bool placeForm(Form *f, int x, int y) {

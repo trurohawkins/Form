@@ -112,8 +112,7 @@ void moveFrameRight(void *actor, float val) {
 
 
 int main() {
-	startWorld(true);
-	initAudio();
+	startWorld(true, true);
 	sound0 = processAudioFile("resources/a1.wav", false);
 	//scheduleAudio(sound0, 1.0);
 
