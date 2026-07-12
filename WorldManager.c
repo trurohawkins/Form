@@ -48,8 +48,8 @@ void runWorld() {
 
 
 void formLoop(float delta) {
+	parseAudioEvents();
 	if (runGraphics) {
-		parseAudioEvents();
 		renderWorld();
 	}
 }
