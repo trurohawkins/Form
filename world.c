@@ -92,6 +92,15 @@ bool moveForm(Form *f, int xd, int yd) {
 	return false;
 }
 
+Cell *getCell(int x, int y) {
+	if (x >= 0 && y >= 0 && x < theWorld.x && y < theWorld.y) {
+		return &theWorld.map[(y * theWorld.x) + x];
+	} else {
+		return 0;
+	}
+}
+
+
 void renderWorld() {
 	if (!worldChanged) {
 		return;
@@ -121,7 +130,9 @@ void renderWorld() {
 					if (skin) {
 						Sigil *sig = skin->data;
 						if (sig->figure) {
-							figure = sig;
+							if (!figure || sig->priority >= figure->priority) {
+								figure = sig;
+							}
 						} else {
 							ground = sig;
 						}
