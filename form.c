@@ -31,6 +31,14 @@ Nub *findNub(Form *f, int type) {
 	return nub;
 }
 
+Nub *growRenderNub(Form *f) {
+	Nub *r = growNub(f);
+	r->type = 1;
+	r->data = calloc(1, sizeof(RenderObject));
+	r->owned = true;
+	return r;
+}
+
 Actor *makeFormActor(Form *f) {
 	Nub *a = growNub(f);
 	a->type = 2;

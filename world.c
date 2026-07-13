@@ -100,7 +100,16 @@ Cell *getCell(int x, int y) {
 	}
 }
 
+int worldXToScreenX(int wx) {
+	return wx + screenX/2 - frameDim[0]/2;
+}
 
+int worldYToScreenY(int wy) {
+	wy = frameDim[1] - wy;
+	return wy + screenY/2 - frameDim[1]/2;
+}
+
+/*
 void renderWorld() {
 	if (!worldChanged) {
 		return;
@@ -134,7 +143,9 @@ void renderWorld() {
 								figure = sig;
 							}
 						} else {
-							ground = sig;
+							if (!ground || sig->priority >= ground->priority) {
+								ground = sig;
+							}
 						}
 					}
 				}
@@ -168,5 +179,31 @@ void renderWorld() {
 	free(glyphs);
 	free(poses);
 	worldChanged = false;
+}
+*/
+void renderWorld() {
+	if (!worldChanged) {
+		return;
+	}
+	linkedList *renders = 0;
+	for (int y = 0; y < frameDim[1]; y++) {
+		for (int x = 0; x < frameDim[0]; x++) {
+			int xp = x + framePos[0];
+			int yp = y + framePos[1];
+			int w = yp * theWorld.x + xp;
+			Cell c = theWorld.map[w];
+			for (int i = 0; i < FORMS_PER_CELL; i++) {
+				if (c.within[i]) {
+					Nub *skin = findNub(c.within[i], 1);
+					if (skin) {
+						addToList(&renders, skin->data);
+					}
+				}						
+			}
+		}
+	}
+	renderObjects(renders);
+	freeListSaveObj(&renders);
+	//worldChanged = false;
 }
 

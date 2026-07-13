@@ -27,6 +27,7 @@ Form *makeForm(int id);
 Nub *growNub(Form *f);
 Nub *findNub(Form *f, int type);
 
+Nub *growRenderNub(Form *f);
 // attaches nub that knows actor
 Actor *makeFormActor(Form *f);
 
