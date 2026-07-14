@@ -20,6 +20,7 @@ bool placeForm(Form *f, int x, int y);
 bool removeForm(Form *f, int x, int y);
 bool moveForm(Form *f, int xd, int y);
 Cell *getCell(int x, int y);
+bool checkFormID(int x, int y, int id);
 int worldXToScreenX(int wx);
 int worldYToScreenY(int wy);
 void renderWorld();

@@ -100,6 +100,18 @@ Cell *getCell(int x, int y) {
 	}
 }
 
+bool checkFormID(int x, int y, int id) {
+	Cell *c = getCell(x, y);
+	if (c) {
+		for (int i = 0; i < FORMS_PER_CELL; i++) {
+			if (c->within[i] && c->within[i]->id == id) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 int worldXToScreenX(int wx) {
 	return wx + screenX/2 - frameDim[0]/2;
 }
@@ -109,78 +121,6 @@ int worldYToScreenY(int wy) {
 	return wy + screenY/2 - frameDim[1]/2;
 }
 
-/*
-void renderWorld() {
-	if (!worldChanged) {
-		return;
-	}
-	Glyph empty = {
-		.br = 0,
-		.bg = 0,
-		.bb = 0,
-
-		.symbol = ' '
-	};
-	Glyph *glyphs = calloc(frameDim[0] * frameDim[1], sizeof(Glyph));
-	int *poses = calloc(frameDim[0] * frameDim[1], sizeof(int));
-	int count = 0;
-	for (int y = 0; y < frameDim[1]; y++) {
-		for (int x = 0; x < frameDim[0]; x++) {
-			int xp = x + framePos[0];
-			int yp = y + framePos[1];
-			int w = yp * theWorld.x + xp;
-			Cell c = theWorld.map[w];
-			Sigil *ground = NULL;
-			Sigil *figure = NULL;
-			for (int i = 0; i < FORMS_PER_CELL; i++) {
-				Form *f = c.within[i];
-				if (f != 0 && f->nub != NULL) {
-					Nub *skin = findNub(f, 1);
-					if (skin) {
-						Sigil *sig = skin->data;
-						if (sig->figure) {
-							if (!figure || sig->priority >= figure->priority) {
-								figure = sig;
-							}
-						} else {
-							if (!ground || sig->priority >= ground->priority) {
-								ground = sig;
-							}
-						}
-					}
-				}
-			}
-			y = frameDim[1] - y - 1;
-			int screeni = (y+screenY/2-frameDim[1]/2) * screenX + (x+screenX/2-frameDim[0]/2);
-			//int screeni = (yp) * screenX + (xp);
-			poses[count] = screeni;
-			Glyph *g = &glyphs[count];//frame->content[fi];
-			if (figure) {
-				g->symbol = figure->symbol;
-				g->fr = figure->r;
-				g->fg = figure->g;
-				g->fb = figure->b;
-			} else {
-				g->symbol = empty.symbol;
-			}
-			if (ground) {
-				g->br = ground->r;
-				g->bg = ground->g;
-				g->bb = ground->b;
-			} else {
-				g->br = empty.br;
-				g->bg = empty.bg;
-				g->bb = empty.bb;
-			}
-			count++;
-		}
-	}
-	renderFrame(glyphs, poses, frameDim[0] * frameDim[1]);
-	free(glyphs);
-	free(poses);
-	worldChanged = false;
-}
-*/
 void renderWorld() {
 	if (!worldChanged) {
 		return;
