@@ -110,6 +110,28 @@ void moveFrameRight(void *actor, float val) {
 	}
 }
 
+void *renderForms(void *data) {
+	Form *f = data;
+	RenderCommand reco = {
+		.screenPos[0] = worldXToScreenX(f->pos[0]),
+		.screenPos[1] = worldYToScreenY(f->pos[1]),
+	};
+	if (f->id == 0) {
+		reco.sigil = '@';
+		reco.r = 128;
+		reco.g = 128;
+		reco.b = 128;
+	} else {
+		reco.sigil = -1;
+		reco.r = 0;
+		if (f->id == 1) {
+			reco.g = 64;
+		} else if (f->id == 2) {
+			reco.b = 64;
+		}
+	}
+}
+
 
 int main() {
 	startWorld(true, true);
@@ -121,12 +143,10 @@ int main() {
 	setFramePosition(worldX/2, worldY/2);
 
 	Form *f = makeForm(0);
-	Sigil *skin = createSigil(f)->data;
-	skin->symbol = '@';
-	skin->figure = true;
-	skin->r = 128;
-	skin->g = 128;
-	skin->b = 128;
+	Nub *ren = growRenderNub(f);
+	RenderObject *rob = ren->data;
+	ren->data = f;
+	rob->render = renderForms;
 
 	Actor *actor = makeFormActor(f);
 	addActor(actor);
@@ -154,15 +174,15 @@ int main() {
 	placeForm(f, worldX/2, worldY/2);
 
 	Form *checker0 = makeForm(1);
-	Sigil *chk0 = createSigil(checker0)->data;
-	chk0->r = 0;
-	chk0->g = 64;
-	chk0->b = 0;
-	Form *checker1 = makeForm(1);
-	Sigil *chk1 = createSigil(checker1)->data;
-	chk1->r = 0;
-	chk1->g = 0;
-	chk1->b = 64;
+	ren = growRenderNub(checker0);
+	rob = ren->data;
+	ren->data = checker0;
+	rob->render = renderForms;
+	Form *checker1 = makeForm(2);
+	ren = growRenderNub(checker1);
+	rob = ren->data;
+	ren->data = checker1;
+	rob->render = renderForms;
 	for (int x = 0; x < worldX; x++) {
 		for (int y = 0; y < worldY; y++) {
 			if (randPercent() > 0.5) {

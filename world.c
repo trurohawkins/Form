@@ -185,7 +185,7 @@ void renderWorld() {
 	if (!worldChanged) {
 		return;
 	}
-	linkedList *renders = 0;
+	startRendering();
 	for (int y = 0; y < frameDim[1]; y++) {
 		for (int x = 0; x < frameDim[0]; x++) {
 			int xp = x + framePos[0];
@@ -196,14 +196,14 @@ void renderWorld() {
 				if (c.within[i]) {
 					Nub *skin = findNub(c.within[i], 1);
 					if (skin) {
-						addToList(&renders, skin->data);
+						RenderObject *rob = skin->data;
+						rob->render(rob->data);
 					}
 				}						
 			}
 		}
 	}
-	renderObjects(renders);
-	freeListSaveObj(&renders);
-	//worldChanged = false;
+	sendRenderFrame();
+	worldChanged = false;
 }
 
