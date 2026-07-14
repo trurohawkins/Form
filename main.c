@@ -159,7 +159,7 @@ int main() {
 	};
 	Action *m = makeAction(0, &move, &mv);
 	addAction(actor, m);
-	scheduleEvent(0, moveGuy, &mv, 3.0);
+	scheduleEvent(moveGuy, &mv, 3.0);
 	Player *p = makePlayer(actor, 0, 0);
 	addControl(p, "K0W", moveUp);
 	addControl(p, "K0A", moveLeft);

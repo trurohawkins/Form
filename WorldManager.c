@@ -13,6 +13,9 @@ bool runAudio = true;
 pthread_t gameThread;
 pthread_t outputThread;
 
+
+int audioEvents[CUR_AUDIO_EVENTS];
+
 bool startWorld(int graphics, int audio) {
 	srand(time(NULL));
 	initDirections();
@@ -28,8 +31,12 @@ bool startWorld(int graphics, int audio) {
 	runGraphics = graphics;
 	if (audio > 0) {
 		initAudio();
+		for (int i = 0; i < CUR_AUDIO_EVENTS; i++) {
+			audioEvents[i] = -1;
+		}
 	}
 	runAudio = audio;
+	pauseFunc = pauseSet;
 
 	return true;
 }
@@ -77,3 +84,24 @@ bool endWorld() {
 	return true;
 }
 
+void addTimedEvent(void (*func)(void *), void *data, double frequency) {
+	int event = scheduleEvent(func, data, frequency);
+	for (int i = 0; i < CUR_AUDIO_EVENTS; i++) {
+		if (audioEvents[i] == -1) {
+			audioEvents[i] = event;
+			break;
+		}
+	}
+}
+
+void pauseSet(bool value) {
+	for (int i = 0; i < CUR_AUDIO_EVENTS; i++) {
+		if (audioEvents[i] != -1) {
+			if (value) {
+				pauseAudioEvent(audioEvents[i]);
+			} else {
+				unpauseAudioEvent(audioEvents[i]);
+			}
+		}
+	}
+}
