@@ -15,6 +15,7 @@ typedef struct {
 } moveVar;
 
 int sound0;
+int playerStamp = -1;
 
 void moveGuy(void *move) {
 	moveVar *mv = move;
@@ -110,6 +111,7 @@ void moveFrameRight(void *actor, float val) {
 	}
 }
 
+
 void *renderForms(void *data) {
 	Form *f = data;
 	RenderCommand reco = {
@@ -117,7 +119,7 @@ void *renderForms(void *data) {
 		.screenPos[1] = worldYToScreenY(f->pos[1]),
 	};
 	if (f->id == 0) {
-		reco.sigil = '@';
+		reco.sigil = playerStamp;
 		reco.r = 128;
 		reco.g = 128;
 		reco.b = 128;
@@ -130,14 +132,17 @@ void *renderForms(void *data) {
 			reco.b = 64;
 		}
 	}
+	addRenderCommand(reco);
 }
 
 
 int main() {
+	debugWrite("caca\n");
 	startWorld(true, true);
 	sound0 = processAudioFile("resources/a1.wav", false);
+	playerStamp = createStamp("@");
 	//scheduleAudio(sound0, 1.0);
-
+	
 	makeWorld(worldX, worldY);
 	setFrameDimension(20, 10);
 	setFramePosition(worldX/2, worldY/2);
@@ -145,7 +150,7 @@ int main() {
 	Form *f = makeForm(0);
 	Nub *ren = growRenderNub(f);
 	RenderObject *rob = ren->data;
-	ren->data = f;
+	rob->data = f;
 	rob->render = renderForms;
 
 	Actor *actor = makeFormActor(f);
@@ -172,16 +177,15 @@ int main() {
 	addPlayer(p);
 
 	placeForm(f, worldX/2, worldY/2);
-
 	Form *checker0 = makeForm(1);
 	ren = growRenderNub(checker0);
 	rob = ren->data;
-	ren->data = checker0;
+	rob->data = checker0;
 	rob->render = renderForms;
 	Form *checker1 = makeForm(2);
 	ren = growRenderNub(checker1);
 	rob = ren->data;
-	ren->data = checker1;
+	rob->data = checker1;
 	rob->render = renderForms;
 	for (int x = 0; x < worldX; x++) {
 		for (int y = 0; y < worldY; y++) {
@@ -192,7 +196,7 @@ int main() {
 			}
 		}
 	}
-	printForm(f);
+	//printForm(f);
 	runWorld();
 	endWorld();
 	return 0;

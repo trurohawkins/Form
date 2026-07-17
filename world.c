@@ -137,7 +137,9 @@ void renderWorld() {
 					Nub *skin = findNub(c.within[i], 1);
 					if (skin) {
 						RenderObject *rob = skin->data;
-						rob->render(rob->data);
+						if (rob->render) {
+							rob->render(rob->data);
+						}
 					}
 				}						
 			}
