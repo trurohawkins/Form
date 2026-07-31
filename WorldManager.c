@@ -14,7 +14,8 @@ pthread_t gameThread;
 pthread_t outputThread;
 
 
-int audioEvents[CUR_AUDIO_EVENTS];
+int audioEvents[MAX_AUDIO_EVENTS];
+RenderCommand activeUI[MAX_UI];
 
 bool startWorld(int graphics, int audio) {
 	srand(time(NULL));
@@ -27,11 +28,15 @@ bool startWorld(int graphics, int audio) {
 	initTermInput();
 	if (graphics > 0) {
 		initScreen();
+		for (int i = 0; i < MAX_UI; i++) {
+			activeUI[i].type = 1;
+			activeUI[i].index = -1;
+		}
 	}
 	runGraphics = graphics;
 	if (audio > 0) {
 		initAudio();
-		for (int i = 0; i < CUR_AUDIO_EVENTS; i++) {
+		for (int i = 0; i < MAX_AUDIO_EVENTS; i++) {
 			audioEvents[i] = -1;
 		}
 	}
@@ -56,8 +61,12 @@ void runWorld() {
 
 void formLoop(float delta) {
 	parseAudioEvents();
-	if (runGraphics) {
+	if (runGraphics && worldChanged) {
+		startRendering();
 		renderWorld();
+		renderUI();
+		sendRenderFrame();
+		worldChanged = false;
 	}
 }
 
@@ -84,24 +93,46 @@ bool endWorld() {
 	return true;
 }
 
-void addTimedEvent(void (*func)(void *), void *data, double frequency) {
+bool addTimedEvent(void (*func)(void *), void *data, double frequency) {
 	int event = scheduleEvent(func, data, frequency);
-	for (int i = 0; i < CUR_AUDIO_EVENTS; i++) {
+	for (int i = 0; i < MAX_AUDIO_EVENTS; i++) {
 		if (audioEvents[i] == -1) {
 			audioEvents[i] = event;
-			break;
+			return true;
 		}
 	}
+	return false;
 }
 
 void pauseSet(bool value) {
-	for (int i = 0; i < CUR_AUDIO_EVENTS; i++) {
+	for (int i = 0; i < MAX_AUDIO_EVENTS; i++) {
 		if (audioEvents[i] != -1) {
 			if (value) {
 				pauseAudioEvent(audioEvents[i]);
 			} else {
 				unpauseAudioEvent(audioEvents[i]);
 			}
+		}
+	}
+}
+
+int addUI(int ui, int screenX, int screenY) {
+	for (int i = 0; i < MAX_UI; i++) {
+		if (activeUI[i].index == -1) {
+			activeUI[i].index = ui;
+			activeUI[i].screenPos[0] = screenX;
+			activeUI[i].screenPos[1] = screenY;
+			activeUI[i].layer = 10;
+			return i;
+		}
+	}
+	return -1;
+}
+
+void renderUI() {
+	for (int i = 0; i < MAX_UI; i++) {
+		if (activeUI[i].index != -1) {
+			addRenderCommand(activeUI[i]);
 		}
 	}
 }

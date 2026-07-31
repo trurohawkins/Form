@@ -115,16 +115,17 @@ void moveFrameRight(void *actor, float val) {
 void *renderForms(void *data) {
 	Form *f = data;
 	RenderCommand reco = {
+		.type = 0,
 		.screenPos[0] = worldXToScreenX(f->pos[0]),
 		.screenPos[1] = worldYToScreenY(f->pos[1]),
 	};
 	if (f->id == 0) {
-		reco.sigil = playerStamp;
+		reco.index = playerStamp;
 		reco.r = 128;
 		reco.g = 128;
 		reco.b = 128;
 	} else {
-		reco.sigil = -1;
+		reco.index = -1;
 		reco.r = 0;
 		if (f->id == 1) {
 			reco.g = 64;

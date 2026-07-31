@@ -122,10 +122,6 @@ int worldYToScreenY(int wy) {
 }
 
 void renderWorld() {
-	if (!worldChanged) {
-		return;
-	}
-	startRendering();
 	for (int y = 0; y < frameDim[1]; y++) {
 		for (int x = 0; x < frameDim[0]; x++) {
 			int xp = x + framePos[0];
@@ -145,7 +141,5 @@ void renderWorld() {
 			}
 		}
 	}
-	sendRenderFrame();
-	worldChanged = false;
 }
 
