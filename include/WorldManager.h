@@ -11,8 +11,4 @@ bool endWorld();
 bool addTimedEvent(void (*func)(void *), void *data, double frequency);
 void pauseSet(bool value);
 
-#define MAX_UI 32
-//returns place in activeUI queue, -1 if full
-int addUI(int ui, int screenX, int screenY);
-void renderUI();
 #endif
