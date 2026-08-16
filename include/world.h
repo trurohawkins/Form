@@ -8,7 +8,6 @@ typedef struct {
 } World;
 
 extern World theWorld;
-extern bool worldChanged;
 
 void makeWorld(int x, int y);
 World *getWorld();

@@ -28,6 +28,7 @@ bool startWorld(int graphics, int audio) {
 	if (graphics > 0) {
 		initScreen();
 	}
+	renderFunc = formRender;
 	runGraphics = graphics;
 	if (audio > 0) {
 		initAudio();
@@ -49,23 +50,22 @@ void runWorld() {
 	if (runGraphics > 0) {
 		 outputThread = createThread(outputLoop, NULL, false);
 	}
-
 	coreLoop();
 }
 
 
 void formLoop(float delta) {
 	parseAudioEvents();
-	if (runGraphics && worldChanged) {
-		startRendering();
+}
+
+void formRender() {
+	if (runGraphics) {
 		renderWorld();
-		worldChanged = false;
-		sendRenderFrame();
 	}
 }
 
 void screenChanged(int x, int y) {
-	worldChanged = true;
+	renderNewShot = true;
 }
 
 bool endWorld() {

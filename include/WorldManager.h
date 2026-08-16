@@ -4,6 +4,7 @@
 bool startWorld(int graphics, int audio);
 void runWorld();
 void formLoop(float delta);
+void formRender();
 void screenChanged(int x, int y);
 bool endWorld();
 

@@ -5,7 +5,6 @@
 
 int frameDim[2] = {0, 0};
 int framePos[2] = {0, 0};
-bool worldChanged = false;
 
 World theWorld = {
 	.x = 0,
@@ -26,7 +25,7 @@ World *getWorld() {
 void setFrameDimension(int x, int y) {
 	frameDim[0] = x;
 	frameDim[1] = y;
-	worldChanged = true;
+	renderNewShot = true;
 }
 
 void setFramePosition(int x, int y) {
@@ -35,7 +34,7 @@ void setFramePosition(int x, int y) {
 	framePos[0] = clamp(x - frameDim[0]/2, 0, theWorld.x - frameDim[0]);
 	framePos[1] = clamp(y - frameDim[1]/2, 0, theWorld.y - frameDim[1]);
 	if (oldX != framePos[0] || oldY != framePos[1]) {
-		worldChanged = true;
+		renderNewShot = true;
 	}
 }
 
@@ -64,7 +63,7 @@ bool placeForm(Form *f, int x, int y) {
 		if (addToCell(f, c)) {
 			f->pos[0] = x;
 			f->pos[1] = y;
-			worldChanged = true;
+			renderNewShot = true;
 			return true;
 		}
 	}
@@ -75,7 +74,7 @@ bool removeForm(Form *f, int x, int y) {
 	if (x >= 0 && y >= 0 && x < theWorld.x && y < theWorld.y) {
 		Cell *c = &theWorld.map[(y*theWorld.x) + x];
 		if (removeFromCell(f, c)) {
-			worldChanged = true;
+			renderNewShot = true;
 		}
 	}
 	return false;

@@ -26,7 +26,7 @@ void moveGuy(void *move) {
 	}
 }
 
-int move(void *form, Action *act) {
+int move(void *form, Action *act, float delta) {
 	return 0;
 	moveVar *mv = act->data;
 	Form *f = form;
