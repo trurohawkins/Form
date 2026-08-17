@@ -121,6 +121,8 @@ int worldYToScreenY(int wy) {
 }
 
 void renderWorld() {
+	static int visit = 0;
+	visit++;
 	for (int y = 0; y < frameDim[1]; y++) {
 		for (int x = 0; x < frameDim[0]; x++) {
 			int xp = x + framePos[0];
@@ -130,9 +132,10 @@ void renderWorld() {
 			for (int i = 0; i < FORMS_PER_CELL; i++) {
 				if (c.within[i]) {
 					Nub *skin = findNub(c.within[i], 1);
-					if (skin) {
+					if (skin && skin->data) {
 						RenderObject *rob = skin->data;
-						if (rob->render) {
+						if (rob->render && rob->lastRender < visit) {
+							rob->lastRender = visit;
 							rob->render(rob->data);
 						}
 					}
