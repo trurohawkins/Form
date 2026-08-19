@@ -3,13 +3,15 @@
 #include "cell.h"
 #include "world.h"
 
-int frameDim[2] = {0, 0};
-int framePos[2] = {0, 0};
-
 World theWorld = {
 	.x = 0,
 	.y = 0,
 	.map = 0
+};
+
+Frame curFrame = {
+	.pos = {0, 0},
+	.dim = {0, 0}
 };
 
 void makeWorld(int x, int y) {
@@ -22,24 +24,28 @@ World *getWorld() {
 	return &theWorld;
 }
 
+Frame *getFrame() {
+	return &curFrame;
+}
+
 void setFrameDimension(int x, int y) {
-	frameDim[0] = x;
-	frameDim[1] = y;
+	curFrame.dim[0] = x;
+	curFrame.dim[1] = y;
 	renderNewShot = true;
 }
 
 void setFramePosition(int x, int y) {
-	int oldX = framePos[0];
-	int oldY = framePos[1];
-	framePos[0] = clamp(x - frameDim[0]/2, 0, theWorld.x - frameDim[0]);
-	framePos[1] = clamp(y - frameDim[1]/2, 0, theWorld.y - frameDim[1]);
-	if (oldX != framePos[0] || oldY != framePos[1]) {
+	int oldX = curFrame.pos[0];
+	int oldY = curFrame.pos[1];
+	curFrame.pos[0] = clamp(x - curFrame.dim[0]/2, 0, theWorld.x - curFrame.dim[0]);
+	curFrame.pos[1] = clamp(y - curFrame.dim[1]/2, 0, theWorld.y - curFrame.dim[1]);
+	if (oldX != curFrame.pos[0] || oldY != curFrame.pos[1]) {
 		renderNewShot = true;
 	}
 }
 
 void moveFrame(int xd, int yd) {
-	setFramePosition(framePos[0] + frameDim[0]/2  + xd, framePos[1] + frameDim[1] / 2 + yd);
+	setFramePosition(curFrame.pos[0] + curFrame.dim[0]/2  + xd, curFrame.pos[1] + curFrame.dim[1] / 2 + yd);
 }
 
 void freeWorld() {
@@ -112,21 +118,21 @@ bool checkFormID(int x, int y, int id) {
 }
 
 int worldXToScreenX(int wx) {
-	return wx + screenX/2 - frameDim[0]/2;
+	return wx + screenX/2 - curFrame.dim[0]/2;
 }
 
 int worldYToScreenY(int wy) {
-	wy = frameDim[1] - wy;
-	return wy + screenY/2 - frameDim[1]/2;
+	wy = curFrame.dim[1] - wy;
+	return wy + screenY/2 - curFrame.dim[1]/2;
 }
 
 void renderWorld() {
 	static int visit = 0;
 	visit++;
-	for (int y = 0; y < frameDim[1]; y++) {
-		for (int x = 0; x < frameDim[0]; x++) {
-			int xp = x + framePos[0];
-			int yp = y + framePos[1];
+	for (int y = 0; y < curFrame.dim[1]; y++) {
+		for (int x = 0; x < curFrame.dim[0]; x++) {
+			int xp = x + curFrame.pos[0];
+			int yp = y + curFrame.pos[1];
 			int w = yp * theWorld.x + xp;
 			Cell c = theWorld.map[w];
 			for (int i = 0; i < FORMS_PER_CELL; i++) {

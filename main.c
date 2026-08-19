@@ -136,9 +136,9 @@ void *renderForms(void *data) {
 		};
 		
 		if (f->id == 1) {
-			pc.color[1] = 64;
+			pc.color.vals[1] = 64;
 		} else if (f->id == 2) {
-			pc.color[2] = 64;
+			pc.color.vals[2] = 64;
 		}
 		memcpy(reco.data, &pc, sizeof(PosColor));
 	}

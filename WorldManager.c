@@ -87,15 +87,15 @@ bool endWorld() {
 	return true;
 }
 
-bool addTimedEvent(void (*func)(void *), void *data, double frequency) {
+int addTimedEvent(void (*func)(void *), void *data, double frequency) {
 	int event = scheduleEvent(func, data, frequency);
 	for (int i = 0; i < MAX_AUDIO_EVENTS; i++) {
 		if (audioEvents[i] == -1) {
 			audioEvents[i] = event;
-			return true;
+			return event;
 		}
 	}
-	return false;
+	return -1;
 }
 
 void pauseSet(bool value) {

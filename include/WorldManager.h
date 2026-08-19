@@ -9,7 +9,7 @@ void screenChanged(int x, int y);
 bool endWorld();
 
 #define MAX_AUDIO_EVENTS 256
-bool addTimedEvent(void (*func)(void *), void *data, double frequency);
+int addTimedEvent(void (*func)(void *), void *data, double frequency);
 void pauseSet(bool value);
 
 #endif

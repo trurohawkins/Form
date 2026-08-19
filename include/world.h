@@ -7,10 +7,16 @@ typedef struct {
 	Cell *map;
 } World;
 
+typedef struct {
+	int pos[2];
+	int dim[2];
+} Frame;
+
 extern World theWorld;
 
 void makeWorld(int x, int y);
 World *getWorld();
+Frame *getFrame();
 void setFrameDimension(int x, int y);
 void setFramePosition(int x, int y);
 void moveFrame(int xd, int yd);
