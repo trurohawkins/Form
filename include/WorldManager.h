@@ -11,5 +11,6 @@ bool endWorld();
 #define MAX_AUDIO_EVENTS 256
 int addTimedEvent(void (*func)(void *), void *data, double frequency);
 void pauseSet(bool value);
+void clearTimedEvents();
 
 #endif

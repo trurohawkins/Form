@@ -49,17 +49,21 @@ void moveFrame(int xd, int yd) {
 }
 
 void freeWorld() {
-	linkedList *forms = 0;
-	for (int i = 0; i < theWorld.x * theWorld.y; i++) {
-		Cell c = theWorld.map[i];
-		for (int j = 0; j < FORMS_PER_CELL; j++) {
-			if (c.within[j] != 0) {
-				addToListSingle(&forms, c.within[j]);
+	if (theWorld.map) {
+		linkedList *forms = 0;
+		for (int i = 0; i < theWorld.x * theWorld.y; i++) {
+			Cell c = theWorld.map[i];
+			for (int j = 0; j < FORMS_PER_CELL; j++) {
+				if (c.within[j] != 0) {
+					addToListSingle(&forms, c.within[j]);
+				}
 			}
 		}
-	}
-	if (forms) {
-		deleteList(&forms, &freeForm);
+		if (forms) {
+			deleteList(&forms, &freeForm);
+		}
+		free(theWorld.map);
+		theWorld.map = 0;
 	}
 }
 

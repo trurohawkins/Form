@@ -98,6 +98,14 @@ int addTimedEvent(void (*func)(void *), void *data, double frequency) {
 	return -1;
 }
 
+void clearTimedEvents() {
+	for (int i = 0; i < MAX_AUDIO_EVENTS; i++) {
+		if (audioEvents[i] != -1) {
+			unscheduleEvent(audioEvents[i]);
+		}
+	}
+}
+
 void pauseSet(bool value) {
 	for (int i = 0; i < MAX_AUDIO_EVENTS; i++) {
 		if (audioEvents[i] != -1) {
