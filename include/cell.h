@@ -2,7 +2,7 @@
 #define CELL
 #include <stdio.h>
 
-#define FORMS_PER_CELL 5
+#define FORMS_PER_CELL 8
 typedef struct {
 	Form *within[FORMS_PER_CELL];
 } Cell;

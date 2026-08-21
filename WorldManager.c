@@ -65,7 +65,9 @@ void formRender() {
 }
 
 void screenChanged(int x, int y) {
-	renderNewShot = true;
+	if (runGraphics) {
+		setNewRender();
+	}
 }
 
 bool endWorld() {

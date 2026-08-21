@@ -31,7 +31,7 @@ Frame *getFrame() {
 void setFrameDimension(int x, int y) {
 	curFrame.dim[0] = x;
 	curFrame.dim[1] = y;
-	renderNewShot = true;
+	setNewRender();
 }
 
 void setFramePosition(int x, int y) {
@@ -40,7 +40,7 @@ void setFramePosition(int x, int y) {
 	curFrame.pos[0] = clamp(x - curFrame.dim[0]/2, 0, theWorld.x - curFrame.dim[0]);
 	curFrame.pos[1] = clamp(y - curFrame.dim[1]/2, 0, theWorld.y - curFrame.dim[1]);
 	if (oldX != curFrame.pos[0] || oldY != curFrame.pos[1]) {
-		renderNewShot = true;
+		setNewRender();
 	}
 }
 
@@ -73,7 +73,7 @@ bool placeForm(Form *f, int x, int y) {
 		if (addToCell(f, c)) {
 			f->pos[0] = x;
 			f->pos[1] = y;
-			renderNewShot = true;
+			setNewRender();
 			return true;
 		}
 	}
@@ -84,7 +84,7 @@ bool removeForm(Form *f, int x, int y) {
 	if (x >= 0 && y >= 0 && x < theWorld.x && y < theWorld.y) {
 		Cell *c = &theWorld.map[(y*theWorld.x) + x];
 		if (removeFromCell(f, c)) {
-			renderNewShot = true;
+			setNewRender();
 		}
 	}
 	return false;
