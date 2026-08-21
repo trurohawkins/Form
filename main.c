@@ -150,7 +150,7 @@ int main() {
 	debugWrite("caca\n");
 	startWorld(true, true);
 	sound0 = processAudioFile("resources/a1.wav", false);
-	playerStamp = createStamp("@");
+	playerStamp = createStamp("<", "3");
 	//scheduleAudio(sound0, 1.0);
 	
 	makeWorld(worldX, worldY);

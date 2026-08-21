@@ -17,6 +17,7 @@ extern World theWorld;
 void makeWorld(int x, int y);
 World *getWorld();
 Frame *getFrame();
+void setRenderStride(int x, int y);
 void setFrameDimension(int x, int y);
 void setFramePosition(int x, int y);
 void moveFrame(int xd, int yd);

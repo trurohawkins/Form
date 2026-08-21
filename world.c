@@ -14,6 +14,8 @@ Frame curFrame = {
 	.dim = {0, 0}
 };
 
+int renderStride[2] = {1, 1};
+
 void makeWorld(int x, int y) {
 	theWorld.x = x;
 	theWorld.y = y;
@@ -26,6 +28,13 @@ World *getWorld() {
 
 Frame *getFrame() {
 	return &curFrame;
+}
+
+//used for ascii render
+void setRenderStride(int x, int y) {
+	renderStride[0] = x;
+	setStampStride(renderStride[0]);
+	renderStride[1] = y;
 }
 
 void setFrameDimension(int x, int y) {
@@ -122,12 +131,12 @@ bool checkFormID(int x, int y, int id) {
 }
 
 int worldXToScreenX(int wx) {
-	return wx + screenX/2 - curFrame.dim[0]/2;
+	return wx + screenX/(2 * renderStride[0]) - curFrame.dim[0]/2;
 }
 
 int worldYToScreenY(int wy) {
 	wy = curFrame.dim[1] - wy;
-	return wy + screenY/2 - curFrame.dim[1]/2;
+	return wy + screenY/(2 * renderStride[1]) - curFrame.dim[1]/2;
 }
 
 void renderWorld() {
