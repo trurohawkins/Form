@@ -140,6 +140,9 @@ int worldYToScreenY(int wy) {
 }
 
 void renderWorld() {
+	if (!theWorld.map) {
+		return;
+	}
 	static int visit = 0;
 	visit++;
 	for (int y = 0; y < curFrame.dim[1]; y++) {
