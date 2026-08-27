@@ -118,16 +118,16 @@ Cell *getCell(int x, int y) {
 	}
 }
 
-bool checkFormID(int x, int y, int id) {
+Form *checkFormID(int x, int y, int id) {
 	Cell *c = getCell(x, y);
 	if (c) {
 		for (int i = 0; i < FORMS_PER_CELL; i++) {
 			if (c->within[i] && c->within[i]->id == id) {
-				return true;
+				return c->within[i];
 			}
 		}
 	}
-	return false;
+	return NULL;
 }
 
 int worldXToScreenX(int wx) {
