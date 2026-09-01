@@ -116,31 +116,29 @@ void *renderForms(void *data) {
 	Form *f = data;
 	RenderCommand reco = {
 		.type = 0,
-	};
-	Pos pos = {
-		.x = worldXToScreenX(f->pos[0]),
-		.y = worldYToScreenY(f->pos[1]),
+		. pos = {
+			.x = worldXToScreenX(f->pos[0]),
+			.y = worldYToScreenY(f->pos[1]),
+		}
 	};
 	if (f->id == 0) {
 		reco.index = playerStamp;
-		PosColor pc = {
-			.pos = pos,
-			.color = {128, 128, 128},
+		Color col = {
+			.rgb = {128, 128, 128},
 		};
-		memcpy(reco.data, &pc, sizeof(PosColor));
+		memcpy(reco.data, &col, sizeof(Color));
 	} else {
 		reco.index = -1;
-		PosColor pc = {
-			.pos = pos,
-			.color = {0, 0, 0},
+		Color col = {
+			.rgb = {0, 0, 0},
 		};
 		
 		if (f->id == 1) {
-			pc.color.rgb[1] = 64;
+			col.rgb[1] = 64;
 		} else if (f->id == 2) {
-			pc.color.rgb[2] = 64;
+			col.rgb[2] = 64;
 		}
-		memcpy(reco.data, &pc, sizeof(PosColor));
+		memcpy(reco.data, &col, sizeof(Color));
 	}
 	addRenderCommand(reco);
 }
