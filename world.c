@@ -33,7 +33,7 @@ Frame *getFrame() {
 //used for ascii render
 void setRenderStride(int x, int y) {
 	renderStride[0] = x;
-	setStampStride(renderStride[0]);
+	setTapestryStride(renderStride[0]);
 	renderStride[1] = y;
 }
 
